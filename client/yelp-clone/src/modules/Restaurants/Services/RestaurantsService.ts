@@ -6,7 +6,7 @@ export type RestaurantsObject = {
 };
 
 export type Data = {
-  restaurants: Restaurants[];
+  restaurants: Restaurants[] | Restaurants;
 };
 
 export type Restaurants = {
@@ -22,8 +22,17 @@ export default class RestaurantsService {
     return response.data;
   }
 
+  async getRestaurantByIdentifier(id: number): Promise<RestaurantsObject> {
+    const response = await ApiService.get(`/api/v1/restaurants/${id}`);
+    return response.data;
+  }
+
   async createRestaurant(restaurant: Restaurants): Promise<any> {
     await ApiService.post('/api/v1/restaurants', restaurant);
+  }
+
+  async updateRestaurant(restaurant: Restaurants): Promise<any> {
+    await ApiService.put(`/api/v1/restaurants/${restaurant.id}`, restaurant);
   }
 
   async deleteRestaurant(id: number): Promise<boolean> {

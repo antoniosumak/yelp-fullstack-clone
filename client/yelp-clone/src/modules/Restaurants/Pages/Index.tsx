@@ -13,7 +13,9 @@ const Index = (): JSX.Element => {
   const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
   const [isEditModalOpened, setIsEditModalOpened] = useState<boolean>(false);
   const [allRestaurants, setAllRestaurants] = useState<RestaurantsObject>();
+  const [restaurant, setRestaurant] = useState<RestaurantsObject>();
   const restaurantsService = new RestaurantsService();
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllRestaurants = async () => {
     try {
@@ -22,6 +24,19 @@ const Index = (): JSX.Element => {
       setAllRestaurants(result);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getRestaurantByIdentifier = async (id: number) => {
+    setIsLoading(true);
+    try {
+      const result: RestaurantsObject =
+        await restaurantsService.getRestaurantByIdentifier(id);
+      setRestaurant(result);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -38,8 +53,9 @@ const Index = (): JSX.Element => {
     getAllRestaurants();
   }, []);
 
-  const test = (e: number) => {
+  const openAndFillEditModal = async (id: number) => {
     setIsEditModalOpened(true);
+    await getRestaurantByIdentifier(id);
   };
 
   return (
@@ -52,8 +68,10 @@ const Index = (): JSX.Element => {
       )}
       {isEditModalOpened && (
         <Edit
-          toggleModal={setIsModalOpened}
-          restaurant={{ name: 'TEST', location: 'VH', id: 1, price_range: 1 }}
+          toggleModal={setIsEditModalOpened}
+          restaurant={restaurant?.data.restaurants}
+          isLoading={isLoading}
+          refreshTable={getAllRestaurants}
         />
       )}
       <Section>
@@ -70,7 +88,7 @@ const Index = (): JSX.Element => {
           ]}
           restaurants={allRestaurants?.data.restaurants}
           deleteRestaurant={deleteRestaurant}
-          test={test}
+          openAndFillEditModal={openAndFillEditModal}
         />
       </Section>
     </>

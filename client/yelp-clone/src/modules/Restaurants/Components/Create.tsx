@@ -34,6 +34,7 @@ const Create = ({ toggleModal, refreshTable }: ICreateProps): JSX.Element => {
       )[0].id;
       await restaurantService.createRestaurant(data);
       await refreshTable();
+      toggleModal(false);
     } catch (error) {
       console.log(error);
     }

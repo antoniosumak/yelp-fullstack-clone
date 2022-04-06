@@ -11,14 +11,14 @@ interface IDynamicTableProps {
   restaurants: Restaurant[];
   tableHeaders: any[];
   deleteRestaurant: Function;
-  test: Function;
+  openAndFillEditModal: Function;
 }
 
 const DynamicTable = ({
   restaurants,
   tableHeaders,
   deleteRestaurant,
-  test,
+  openAndFillEditModal,
 }: IDynamicTableProps): JSX.Element => {
   const priceRangeDollar = '$';
   return (
@@ -38,7 +38,7 @@ const DynamicTable = ({
       <tbody>
         {restaurants ? (
           restaurants.map((restaurant: Restaurant) => (
-            <tr className='border border-gray-100 '>
+            <tr className='border border-gray-100 ' key={restaurant.name}>
               {Object.entries(restaurant).map((value, index) => (
                 <td className='px-6 py-4' key={index}>
                   {value[0] === 'price_range'
@@ -50,7 +50,7 @@ const DynamicTable = ({
                 <MdEdit
                   className='cursor-pointer text-gray-300'
                   onClick={() => {
-                    test(restaurant.id);
+                    openAndFillEditModal(restaurant.id);
                   }}
                 />
                 <MdDelete

@@ -4,9 +4,10 @@ interface ISelectProps {
   options?: { id: number; name: string }[];
   register: any;
   label: string;
+  defaultValue?: number;
 }
 
-const Select = ({ options, register, label }: ISelectProps) => {
+const Select = ({ options, register, label, defaultValue }: ISelectProps) => {
   return (
     <div className='flex flex-col w-full'>
       <label className='mb-1'>{label}</label>
@@ -16,7 +17,9 @@ const Select = ({ options, register, label }: ISelectProps) => {
       >
         {options &&
           options.map((option: { id: number; name: string }, index) => (
-            <option key={index}>{option.name}</option>
+            <option key={index} selected={defaultValue === option.id}>
+              {option.name}
+            </option>
           ))}
       </select>
     </div>

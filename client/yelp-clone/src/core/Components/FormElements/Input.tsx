@@ -3,7 +3,7 @@ import * as React from 'react';
 interface IInputProps {
   label: string;
   register: any;
-  defaultValue: any;
+  defaultValue?: any;
 }
 
 const Input = ({ label, register, defaultValue }: IInputProps): JSX.Element => {
