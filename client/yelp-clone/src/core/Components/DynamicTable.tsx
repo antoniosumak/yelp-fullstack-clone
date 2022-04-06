@@ -11,12 +11,14 @@ interface IDynamicTableProps {
   restaurants: Restaurant[];
   tableHeaders: any[];
   deleteRestaurant: Function;
+  test: Function;
 }
 
 const DynamicTable = ({
   restaurants,
   tableHeaders,
   deleteRestaurant,
+  test,
 }: IDynamicTableProps): JSX.Element => {
   const priceRangeDollar = '$';
   return (
@@ -34,24 +36,37 @@ const DynamicTable = ({
         </tr>
       </thead>
       <tbody>
-        {restaurants.map((restaurant: Restaurant) => (
-          <tr className='border border-gray-100 '>
-            {Object.entries(restaurant).map((value, index) => (
-              <td className='px-6 py-4' key={index}>
-                {value[0] === 'price_range'
-                  ? priceRangeDollar.repeat(Number(value[1]))
-                  : value[1]}
+        {restaurants ? (
+          restaurants.map((restaurant: Restaurant) => (
+            <tr className='border border-gray-100 '>
+              {Object.entries(restaurant).map((value, index) => (
+                <td className='px-6 py-4' key={index}>
+                  {value[0] === 'price_range'
+                    ? priceRangeDollar.repeat(Number(value[1]))
+                    : value[1]}
+                </td>
+              ))}
+              <td className='px-6 py-4 flex items-center space-x-2 text-2xl'>
+                <MdEdit
+                  className='cursor-pointer text-gray-300'
+                  onClick={() => {
+                    test(restaurant.id);
+                  }}
+                />
+                <MdDelete
+                  className='cursor-pointer hover:text-red-500 text-gray-300'
+                  onClick={() => deleteRestaurant(restaurant.id)}
+                />
               </td>
-            ))}
-            <td className='px-6 py-4 flex items-center space-x-2 text-2xl'>
-              <MdEdit className='cursor-pointer text-gray-300' />
-              <MdDelete
-                className='cursor-pointer hover:text-red-500 text-gray-300'
-                onClick={() => deleteRestaurant(restaurant.id)}
-              />
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td className='px-6 py-4' colSpan={20}>
+              There is no data!
             </td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );

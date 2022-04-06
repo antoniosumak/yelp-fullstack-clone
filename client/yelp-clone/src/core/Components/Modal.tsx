@@ -10,9 +10,9 @@ interface IModalProps {
 const Modal = ({ title, toggleModal, children }: IModalProps): JSX.Element => {
   return (
     <div className='fixed inset-0 bg-overlay z-10 flex items-center justify-center'>
-      <div className='bg-white w-10/12 lg:w-6/12 p-6'>
+      <div className='bg-white w-10/12 lg:w-6/12 p-6 modal'>
         <div className='flex items-center justify-between'>
-          <h2 className='font-bold text-lg'>{title}</h2>
+          <h2 className='font-bold text-xl'>{title}</h2>
           <IoClose
             className='cursor-pointer hover:text-red-500'
             onClick={() => toggleModal(false)}
