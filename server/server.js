@@ -20,7 +20,9 @@ const PORT = process.env.PORT || 3001;
 
 app.get('/api/v1/restaurants', async (req, res) => {
   try {
-    const results = await db.query('SELECT * FROM restaurants');
+    const results = await db.query(
+      'select * from restaurants left join (select restaurantid, COUNT(*), TRUNC(AVG(rating),1) as average_rating from reviews group by restaurantid) reviews on restaurants.id = reviews.restaurantid'
+    );
     const { rows } = results;
     res.status(200).json({
       results: rows.length,
@@ -35,9 +37,10 @@ app.get('/api/v1/restaurants', async (req, res) => {
 
 app.get('/api/v1/restaurants/:id', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM restaurants WHERE id = $1', [
-      req.params.id,
-    ]);
+    const result = await db.query(
+      'select * from restaurants left join (select restaurantid, COUNT(*), TRUNC(AVG(rating),1) as average_rating from reviews group by restaurantid) reviews on restaurants.id = reviews.restaurantid WHERE id = $1',
+      [req.params.id]
+    );
     const { rows } = result;
     res.status(rows.length ? 200 : 404).json({
       results: rows.length,
@@ -95,6 +98,40 @@ app.delete('/api/v1/restaurants/:id', async (req, res) => {
   }
 });
 
+app.get('/api/v1/restaurants/:id/reviews', async (req, res) => {
+  try {
+    const response = await db.query(
+      'SELECT * from reviews WHERE restaurantid = $1',
+      [req.params.id]
+    );
+    const { rows } = response;
+
+    res.status(200).json({
+      data: {
+        reviews: rows,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post('/api/v1/restaurants/:id/add-review', async (req, res) => {
+  try {
+    const response = await db.query(
+      'INSERT INTO reviews (restaurantid, name, review, rating) VALUES ($1, $2, $3, $4) returning *',
+      [req.body.restaurantId, req.body.name, req.body.review, req.body.rating]
+    );
+    const { rows } = response;
+    res.status(200).json({
+      data: {
+        reviews: rows[0],
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 app.listen(PORT, () => {
   console.log(`server is up and listening on ${PORT}`);
 });
