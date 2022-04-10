@@ -80,12 +80,13 @@ const Index = (): JSX.Element => {
         </div>
 
         <DynamicTable
-          tableHeaders={[
-            { id: 'ID' },
-            { name: 'Name' },
-            { location: 'Location' },
-            { price_range: 'Price range' },
-          ]}
+          tableHeaders={{
+            id: 'ID',
+            name: 'Name',
+            location: 'Location',
+            price_range: 'Price range',
+            ratings: 'Ratings',
+          }}
           restaurants={allRestaurants?.data.restaurants}
           deleteRestaurant={deleteRestaurant}
           openAndFillEditModal={openAndFillEditModal}

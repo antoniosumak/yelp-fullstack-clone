@@ -24,10 +24,23 @@ app.get('/api/v1/restaurants', async (req, res) => {
       'select * from restaurants left join (select restaurantid, COUNT(*), TRUNC(AVG(rating),1) as average_rating from reviews group by restaurantid) reviews on restaurants.id = reviews.restaurantid'
     );
     const { rows } = results;
+    const tempArr = [];
+    rows.forEach((value) => {
+      let tempObj = {};
+      tempObj = { ...value };
+      tempObj.ratings = {};
+      tempObj.ratings.average_rating = value.average_rating;
+      tempObj.ratings.count = value.count;
+      delete tempObj.average_rating;
+      delete tempObj.count;
+
+      tempArr.push(tempObj);
+    });
+    console.log(tempArr);
     res.status(200).json({
       results: rows.length,
       data: {
-        restaurants: rows,
+        restaurants: tempArr,
       },
     });
   } catch (error) {
